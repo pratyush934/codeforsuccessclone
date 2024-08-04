@@ -1,3 +1,4 @@
+import prisma from "@/lib/db";
 import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions = {
@@ -11,10 +12,9 @@ export const authOptions = {
   ],
   // A database is optional, but required to persist accounts in a database
   callbacks: {
-    async signIn({ account, profile }: { account: any; profile: any }) {
-      //   console.log("--> account", account);
-      //   console.log("--->", profile);
+    async signIn({ account, profile }: { account: any; profile: any }) { 
       if (account.provider === "google") {
+        
         return profile.email_verified && profile.email.endsWith("@gmail.com");
       }
       return true; // Do different verification for other providers that don't have `email_verified`
