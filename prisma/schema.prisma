@@ -11,13 +11,14 @@ datasource db {
 }
 
 model User {
-  id         String    @id @default(uuid())
+  id         String   @id @default(uuid())
+  fullName   String
   username   String
-  email      String    @unique
+  email      String   @unique
   pictureUrl String?
-  role       Role      @default(USER)
-  createdAt   DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  role       Role     @default(USER)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   Post       Post[]
   Courses    Course[]
   coursesId  String?
@@ -45,7 +46,7 @@ model Course {
 }
 
 model Video {
-  id          String  @id @default(uuid())
+  id          String @id @default(uuid())
   videoUrl    String
   title       String
   desctiption String

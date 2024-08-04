@@ -12,10 +12,32 @@ export const authOptions = {
   ],
   // A database is optional, but required to persist accounts in a database
   callbacks: {
-    async signIn({ account, profile }: { account: any; profile: any }) { 
-      if (account.provider === "google") {
-        
-        return profile.email_verified && profile.email.endsWith("@gmail.com");
+    async signIn({ account, profile }: { account: any; profile: any }) {
+      try {
+        const { email, email_verified, name, picture, given_name } = profile;
+
+        const getEmail = await prisma.user.findUnique({
+          where: {
+            email: email,
+          },
+        });
+        // console.log("getEmail is true or not", getEmail);
+
+        if (getEmail) {
+          console.log(`User already exist with email: ${email}`);
+          return true;
+        } else {
+          await prisma.user.create({
+            data: {
+              username: given_name,
+              fullName: name,
+              pictureUrl: picture,
+              email: email,
+            },
+          });
+        }
+      } catch (error) {
+        console.log(`Error exist while singIn: ${error}`);
       }
       return true; // Do different verification for other providers that don't have `email_verified`
     },
@@ -23,6 +45,18 @@ export const authOptions = {
 };
 
 /* 
+
+getEmail is true or not {
+  id: '2b4a196b-793e-4ac4-a066-9a4ef07031a1',
+  fullName: 'Pratyush Sinha',
+  username: 'Pratyush',
+  email: 'pratyushsinha982@gmail.com',
+  pictureUrl: 'https://lh3.googleusercontent.com/a/ACg8ocJ1cwzEFtjhTH7CgimxjBNvdvd7RsTD-lTn68lOaWEUr51HIJY=s96-c',
+  role: 'USER',
+  createdAt: 2024-08-04T16:47:45.577Z,
+  updatedAt: 2024-08-04T16:47:45.577Z,
+  coursesId: null
+}
 
 --> account {
   provider: 'google',
