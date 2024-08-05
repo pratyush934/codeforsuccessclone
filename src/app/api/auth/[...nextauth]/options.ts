@@ -1,5 +1,7 @@
 import prisma from "@/lib/db";
+import { Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { useRouter } from "next/navigation";
 
 export const authOptions = {
   // Configure one or more authentication providers
@@ -12,6 +14,34 @@ export const authOptions = {
   ],
   // A database is optional, but required to persist accounts in a database
   callbacks: {
+    async session({ session }: { session: Session }): Promise<Session> {
+      try {
+        const sessionUser = await prisma.user.findUnique({
+          where: {
+            email: session.user.email,
+          },
+          select: {
+            id: true,
+            role: true,
+            username: true,
+            pictureUrl: true,
+          },
+        });
+        if (sessionUser) {
+          session.user.id = sessionUser?.id;
+          session.user.role = sessionUser?.role;
+          session.user.pictureUrl = sessionUser?.pictureUrl as string;
+          session.user.username = sessionUser?.username;
+        } else {
+          console.log(`SessionUser is empty look at the options.ts`);
+        }
+      } catch (error) {
+        console.log(`Error exist in session function in options.ts, ${error}`);
+      }
+      // console.log(session);
+      return session;
+    },
+    // ...other callbacks
     async signIn({ account, profile }: { account: any; profile: any }) {
       try {
         const { email, email_verified, name, picture, given_name } = profile;
