@@ -13,6 +13,7 @@ export const authOptions = {
     // ...add more providers here
   ],
   // A database is optional, but required to persist accounts in a database
+  //included type safety and everything is working fine
   callbacks: {
     async session({ session }: { session: Session }): Promise<Session> {
       try {
