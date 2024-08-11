@@ -6,6 +6,7 @@ const DashBoardLayout = ({children} : {children: React.ReactNode}) => {
         <div className='mt-10 '>
         {children}
         </div>
+        {/* adding comment */}
     </div>
   )
 }
