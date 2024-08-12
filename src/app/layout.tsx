@@ -20,7 +20,6 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <AuthProvider>
         <body className={inter.className}>
-          <AppBar />
           {children}
         </body>
       </AuthProvider>

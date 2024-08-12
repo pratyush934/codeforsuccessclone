@@ -1,9 +1,10 @@
 import prisma from "@/lib/db";
-import { Session } from "next-auth";
+import { Account, AuthOptions, Profile, Session, User } from "next-auth";
+import { AdapterUser } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
 import { useRouter } from "next/navigation";
 
-export const authOptions = {
+export const authOptions: AuthOptions = {
   // Configure one or more authentication providers
   providers: [
     GoogleProvider({
@@ -43,9 +44,31 @@ export const authOptions = {
       return session;
     },
     // ...other callbacks
-    async signIn({ account, profile }: { account: any; profile: any }) {
+    async signIn(params: {
+      user: User | AdapterUser;
+      account: Account | null;
+      profile?: Profile | undefined;
+      email?: { verificationRequest?: boolean | undefined } | undefined;
+      credentials?: Record<string, any> | undefined;
+    }): Promise<boolean> {
       try {
-        const { email, email_verified, name, picture, given_name } = profile;
+        // console.log(params.profile);
+        // if (!params.profile) {
+        //   console.log("Profile is undefined");
+        //   return false;
+        // }
+        const { profile } = params;
+        /* 
+         interface Profile {
+          email: string;
+          email_verified: boolean;
+          name: string;
+          picture: string;
+          given_name: string;
+  }
+        */
+        const { email, email_verified, name, picture, given_name } =
+          profile as Profile;
 
         const getEmail = await prisma.user.findUnique({
           where: {
@@ -61,9 +84,9 @@ export const authOptions = {
           await prisma.user.create({
             data: {
               username: given_name,
-              fullName: name,
+              fullName: name as string,
               pictureUrl: picture,
-              email: email,
+              email: email as string,
             },
           });
         }
@@ -74,6 +97,25 @@ export const authOptions = {
     },
   },
 };
+
+/* 
+
+{
+  iss: 'https://accounts.google.com',
+  azp: '658806029101-eaab0j26sedtb8birb4qirhdi2f6auha.apps.googleusercontent.com',
+  aud: '658806029101-eaab0j26sedtb8birb4qirhdi2f6auha.apps.googleusercontent.com',
+  sub: '100338726084305849033',
+  email: 'pratyushsinha982@gmail.com',
+  email_verified: true,
+  at_hash: 'x4zplJwFN2mjBHf9W8DnAQ',
+  name: 'Pratyush Sinha',
+  picture: 'https://lh3.googleusercontent.com/a/ACg8ocJ1cwzEFtjhTH7CgimxjBNvdvd7RsTD-lTn68lOaWEUr51HIJY=s96-c',
+  given_name: 'Pratyush',
+  family_name: 'Sinha',
+  iat: 1723434732,
+  exp: 1723438332
+}
+*/
 
 /* 
 

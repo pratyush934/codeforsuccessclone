@@ -1,14 +1,34 @@
-import React from 'react'
-import DashBoardLayout from './layout'
+"use client";
+import React from "react";
+import DashBoardLayout from "./layoutt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { redirect } from "next/navigation";
+import { getSession, useSession } from "next-auth/react";
+import CoreLayout from "@/components/layouts/CoreLayout";
 
 const DashBoard = () => {
-  return (
-    <DashBoardLayout>
-        <div className='text-5xl font-bold text-black dark:text-white'>
-        It is dashboard
-        </div>
-    </DashBoardLayout>
-  )
-}
+  const { data: session, status } = useSession();
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
 
-export default DashBoard
+  if (!session) {
+    redirect("/");
+    return null;
+  }
+
+  console.log("==========-------======----->", session);
+  // const session = await getServerSession(authOptions);
+  // console.log("==========-------======----->",session);
+
+  return (
+    <CoreLayout>
+     <div className="text-white">
+      Hey, I am Pratyush
+     </div>
+    </CoreLayout>
+  );
+};
+
+export default DashBoard;
