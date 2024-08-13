@@ -6,6 +6,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
 import { getSession, useSession } from "next-auth/react";
 import CoreLayout from "@/components/layouts/CoreLayout";
+import RichTextExample from "@/components/TextEditor/RTE";
 
 const DashBoard = () => {
   const { data: session, status } = useSession();
@@ -24,9 +25,9 @@ const DashBoard = () => {
 
   return (
     <CoreLayout>
-     <div className="text-white">
-      Hey, I am Pratyush
-     </div>
+      <div className="text-white">
+        <RichTextExample />
+      </div>
     </CoreLayout>
   );
 };
