@@ -89,6 +89,7 @@ export function SidebarDemo({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
+// adding some comments
 export const Logo = () => {
   return (
     <Link
