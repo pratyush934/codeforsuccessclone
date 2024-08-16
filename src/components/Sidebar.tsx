@@ -86,6 +86,7 @@ export function SidebarDemo({ children }: { children: React.ReactNode }) {
         </SidebarBody>
       </Sidebar>
       <Dashboard> {children}</Dashboard>
+      {/* Greate */}
     </div>
   );
 }
