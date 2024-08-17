@@ -13,7 +13,7 @@ const DashBoard = () => {
   if (status === "loading") {
     return <div>Loading...</div>;
   }
-
+  //it is imp
   if (!session) {
     redirect("/");
     return null;
